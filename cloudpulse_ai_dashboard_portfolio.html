@@ -1,0 +1,2023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CloudPulse AI — Cloud & AI Deployment Monitor & Portfolio</title>
+  <style>
+    /* ==========================================================================
+       1. DESIGN TOKENS & CSS CUSTOM PROPERTIES (EMERALD OBSIDIAN DEFAULT)
+       ========================================================================== */
+    :root {
+      /* Surface & Background Palette */
+      --bg-base: #07090b;
+      --bg-surface: rgba(15, 19, 23, 0.72);
+      --bg-surface-elevated: rgba(24, 30, 36, 0.8);
+      --bg-terminal: #050709;
+      
+      /* Radial Ambient Glows */
+      --glow-1: rgba(16, 185, 129, 0.13);
+      --glow-2: rgba(245, 158, 11, 0.11);
+      --glow-3: rgba(16, 185, 129, 0.06);
+
+      /* Borders & Glassmorphism */
+      --border-subtle: rgba(163, 177, 170, 0.14);
+      --border-glow: rgba(16, 185, 129, 0.38);
+      --glass-blur: blur(16px);
+
+      /* Primary & Secondary Theme Accents */
+      --accent-primary: #10b981;
+      --accent-primary-dim: rgba(16, 185, 129, 0.15);
+      --accent-secondary: #f59e0b;
+      --accent-secondary-dim: rgba(245, 158, 11, 0.15);
+
+      /* Semantic Status Accents */
+      --accent-emerald: #10b981;
+      --accent-emerald-dim: rgba(16, 185, 129, 0.15);
+      --accent-cyan: #10b981;
+      --accent-cyan-dim: rgba(16, 185, 129, 0.15);
+      --accent-indigo: #f59e0b;
+      --accent-indigo-dim: rgba(245, 158, 11, 0.15);
+      --accent-amber: #f59e0b;
+      --accent-amber-dim: rgba(245, 158, 11, 0.15);
+      --accent-rose: #f43f5e;
+      --accent-rose-dim: rgba(244, 63, 94, 0.15);
+
+      /* Typography */
+      --text-primary: #f8fafc;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+      /* Geometry & Elevation */
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-full: 9999px;
+      --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
+      --shadow-glow: 0 0 26px rgba(16, 185, 129, 0.2);
+
+      /* Transitions */
+      --transition-fast: 160ms cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-smooth: 280ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Theme Variant 2: Crimson Dusk */
+    [data-theme="crimson"] {
+      --bg-base: #0b0608;
+      --bg-surface: rgba(23, 13, 17, 0.72);
+      --bg-surface-elevated: rgba(36, 20, 26, 0.8);
+      --bg-terminal: #070405;
+      --glow-1: rgba(244, 63, 94, 0.14);
+      --glow-2: rgba(251, 146, 60, 0.11);
+      --glow-3: rgba(244, 63, 94, 0.06);
+      --border-subtle: rgba(244, 163, 180, 0.14);
+      --border-glow: rgba(244, 63, 94, 0.4);
+      --accent-primary: #f43f5e;
+      --accent-primary-dim: rgba(244, 63, 94, 0.16);
+      --accent-secondary: #fb923c;
+      --accent-secondary-dim: rgba(251, 146, 60, 0.16);
+      --accent-cyan: #f43f5e;
+      --accent-cyan-dim: rgba(244, 63, 94, 0.16);
+      --accent-indigo: #fb923c;
+      --accent-indigo-dim: rgba(251, 146, 60, 0.16);
+      --shadow-glow: 0 0 26px rgba(244, 63, 94, 0.22);
+    }
+
+    /* Theme Variant 3: Midnight Sapphire */
+    [data-theme="sapphire"] {
+      --bg-base: #060913;
+      --bg-surface: rgba(15, 23, 42, 0.68);
+      --bg-surface-elevated: rgba(30, 41, 59, 0.76);
+      --bg-terminal: #04070f;
+      --glow-1: rgba(56, 189, 248, 0.13);
+      --glow-2: rgba(129, 140, 248, 0.13);
+      --glow-3: rgba(16, 185, 129, 0.07);
+      --border-subtle: rgba(148, 163, 184, 0.14);
+      --border-glow: rgba(56, 189, 248, 0.36);
+      --accent-primary: #38bdf8;
+      --accent-primary-dim: rgba(56, 189, 248, 0.15);
+      --accent-secondary: #818cf8;
+      --accent-secondary-dim: rgba(129, 140, 248, 0.15);
+      --accent-cyan: #38bdf8;
+      --accent-cyan-dim: rgba(56, 189, 248, 0.15);
+      --accent-indigo: #818cf8;
+      --accent-indigo-dim: rgba(129, 140, 248, 0.15);
+      --shadow-glow: 0 0 26px rgba(56, 189, 248, 0.2);
+    }
+
+    /* ==========================================================================
+       2. RESET & BASE LAYOUT
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-image:
+        radial-gradient(circle at 12% 10%, var(--glow-1) 0%, transparent 40%),
+        radial-gradient(circle at 88% 22%, var(--glow-2) 0%, transparent 44%),
+        radial-gradient(circle at 50% 85%, var(--glow-3) 0%, transparent 46%);
+      background-attachment: fixed;
+      transition: background-color var(--transition-smooth);
+    }
+
+    /* Subtle Engineering Grid Overlay */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(to right, rgba(148, 163, 184, 0.035) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(148, 163, 184, 0.035) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: inherit;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 1.25rem;
+    }
+
+    /* ==========================================================================
+       3. GLASSMORPHIC COMPONENTS & UTILITIES
+       ========================================================================== */
+    .glass-card {
+      background: var(--bg-surface);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+      transition: transform var(--transition-smooth), border-color var(--transition-smooth), box-shadow var(--transition-smooth);
+    }
+
+    .glass-card:hover {
+      border-color: rgba(148, 163, 184, 0.28);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.28rem 0.7rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .badge-emerald {
+      background: var(--accent-emerald-dim);
+      color: var(--accent-emerald);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+
+    .badge-cyan {
+      background: var(--accent-cyan-dim);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+    }
+
+    .badge-indigo {
+      background: var(--accent-indigo-dim);
+      color: var(--accent-indigo);
+      border: 1px solid rgba(129, 140, 248, 0.25);
+    }
+
+    .badge-amber {
+      background: var(--accent-amber-dim);
+      color: var(--accent-amber);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--accent-emerald);
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulseRing 2s infinite;
+    }
+
+    @keyframes pulseRing {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.65); }
+      70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.2rem;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      font-weight: 600;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      color: #050709;
+      box-shadow: 0 4px 16px var(--accent-primary-dim);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 22px var(--border-glow);
+      filter: brightness(1.06);
+    }
+
+    .btn-secondary {
+      background: rgba(30, 41, 59, 0.75);
+      color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(51, 65, 85, 0.85);
+      border-color: var(--border-glow);
+    }
+
+    /* ==========================================================================
+       4. NAVIGATION BAR
+       ========================================================================== */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(7, 9, 11, 0.84);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    /* Interactive Theme Switcher Pill */
+    .theme-switcher {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.28rem 0.5rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .theme-dot-btn {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+      position: relative;
+    }
+
+    .theme-dot-btn:hover {
+      transform: scale(1.15);
+    }
+
+    .theme-dot-btn.active {
+      border-color: #ffffff;
+      transform: scale(1.12);
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.45);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(129, 140, 248, 0.25));
+      border: 1px solid var(--border-glow);
+      display: grid;
+      place-items: center;
+      color: var(--accent-cyan);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.75rem;
+    }
+
+    .nav-links a {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      transition: color var(--transition-fast);
+    }
+
+    .nav-links a:hover {
+      color: var(--text-primary);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .mobile-toggle {
+      display: none;
+      padding: 0.5rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+    }
+
+    /* ==========================================================================
+       5. HERO & LIVE TELEMETRY HEADER
+       ========================================================================== */
+    .hero {
+      padding: 2.75rem 0 2rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 1.75rem;
+      align-items: center;
+    }
+
+    .hero-title {
+      font-size: clamp(2rem, 3.6vw, 3rem);
+      font-weight: 800;
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+      margin: 0.85rem 0 1rem;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #f8fafc 15%, var(--accent-primary) 58%, var(--accent-secondary) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-subtitle {
+      color: var(--text-secondary);
+      font-size: 1.02rem;
+      max-width: 60ch;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      align-items: center;
+    }
+
+    /* Engineer Profile Card inside Hero */
+    .architect-card {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.15rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .architect-card::after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      right: -30%;
+      width: 240px;
+      height: 240px;
+      background: radial-gradient(circle, var(--glow-1), transparent 70%);
+      pointer-events: none;
+    }
+
+    .architect-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .avatar-ring {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-indigo));
+      padding: 2px;
+      flex-shrink: 0;
+    }
+
+    .avatar-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: #090d10;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--accent-primary);
+    }
+
+    .tech-stack-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .tech-pill {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+    }
+
+    /* ==========================================================================
+       6. SECTION HEADERS
+       ========================================================================== */
+    .section {
+      padding: 2rem 0;
+    }
+
+    .section-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .section-desc {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    /* ==========================================================================
+       7. LIVE METRICS KPI GRID & SVG CHARTS
+       ========================================================================== */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+    }
+
+    .kpi-card {
+      padding: 1.35rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .kpi-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .kpi-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .kpi-value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      margin-top: 0.35rem;
+    }
+
+    .kpi-value {
+      font-size: 1.85rem;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.03em;
+    }
+
+    .kpi-unit {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    .kpi-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      border-top: 1px solid rgba(148, 163, 184, 0.09);
+      padding-top: 0.75rem;
+    }
+
+    /* SVG Sparkline & Radial Gauge */
+    .sparkline-svg {
+      width: 100%;
+      height: 44px;
+      overflow: visible;
+    }
+
+    .gauge-wrap {
+      position: relative;
+      width: 64px;
+      height: 64px;
+      flex-shrink: 0;
+    }
+
+    .gauge-text {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+    }
+
+    /* ==========================================================================
+       8. INTERACTIVE SERVICE HEALTH & CONTAINER NODES
+       ========================================================================== */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+    }
+
+    .service-card {
+      padding: 1.35rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .service-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .service-identity {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .service-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: rgba(30, 41, 59, 0.9);
+      border: 1px solid var(--border-subtle);
+      display: grid;
+      place-items: center;
+      color: var(--accent-cyan);
+    }
+
+    .service-name {
+      font-weight: 700;
+      font-size: 0.98rem;
+    }
+
+    .service-meta {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .service-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      background: rgba(6, 9, 19, 0.5);
+      padding: 0.75rem;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(148, 163, 184, 0.08);
+    }
+
+    .stat-item span:first-child {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .stat-item span:last-child {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .service-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .btn-xs {
+      padding: 0.4rem 0.75rem;
+      font-size: 0.78rem;
+      border-radius: var(--radius-sm);
+    }
+
+    /* ==========================================================================
+       9. INTERACTIVE DEPLOYMENT TERMINAL SIMULATOR
+       ========================================================================== */
+    .terminal-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 1.25rem;
+      align-items: stretch;
+    }
+
+    .deploy-controls {
+      padding: 1.35rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1.25rem;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .control-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .select-input, .text-input, .textarea-input {
+      width: 100%;
+      background: rgba(6, 9, 19, 0.8);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      padding: 0.65rem 0.85rem;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color var(--transition-fast);
+    }
+
+    .select-input:focus, .text-input:focus, .textarea-input:focus {
+      border-color: var(--accent-cyan);
+    }
+
+    .terminal-window {
+      background: var(--bg-terminal);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7);
+    }
+
+    .terminal-bar {
+      background: rgba(15, 23, 42, 0.9);
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .window-dots {
+      display: flex;
+      gap: 0.45rem;
+    }
+
+    .window-dots span {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+    }
+
+    .dot-red { background: #ef4444; }
+    .dot-yellow { background: #f59e0b; }
+    .dot-green { background: #10b981; }
+
+    .terminal-title {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+    }
+
+    .terminal-body {
+      padding: 1.15rem;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      line-height: 1.65;
+      height: 310px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .log-line {
+      display: flex;
+      gap: 0.65rem;
+      word-break: break-word;
+      animation: fadeSlideIn 0.2s ease-out;
+    }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .log-time { color: var(--text-muted); flex-shrink: 0; }
+    .log-tag-info { color: var(--accent-cyan); font-weight: 700; }
+    .log-tag-ok { color: var(--accent-emerald); font-weight: 700; }
+    .log-tag-warn { color: var(--accent-amber); font-weight: 700; }
+    .log-tag-cmd { color: var(--accent-indigo); font-weight: 700; }
+
+    /* ==========================================================================
+       10. FILTERABLE PROJECT SHOWCASE GRID
+       ========================================================================== */
+    .filter-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .filter-btn {
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-full);
+      font-size: 0.84rem;
+      font-weight: 600;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      transition: all var(--transition-fast);
+    }
+
+    .filter-btn:hover {
+      color: var(--text-primary);
+      border-color: rgba(148, 163, 184, 0.35);
+    }
+
+    .filter-btn.active {
+      background: var(--accent-cyan-dim);
+      color: var(--accent-cyan);
+      border-color: var(--accent-cyan);
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.35rem;
+    }
+
+    .project-card {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1.25rem;
+    }
+
+    .project-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-glow);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .project-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.85rem;
+    }
+
+    .project-title {
+      font-size: 1.12rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .project-desc {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+
+    .project-metrics {
+      display: flex;
+      gap: 1rem;
+      padding: 0.65rem 0.85rem;
+      border-radius: var(--radius-sm);
+      background: rgba(6, 9, 19, 0.55);
+      border: 1px solid rgba(148, 163, 184, 0.08);
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      color: var(--accent-emerald);
+    }
+
+    .project-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding-top: 0.85rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.1);
+    }
+
+    /* ==========================================================================
+       11. MODAL & TOAST NOTIFICATIONS
+       ========================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 6, 14, 0.78);
+      backdrop-filter: blur(8px);
+      display: none;
+      place-items: center;
+      padding: 1rem;
+      z-index: 100;
+    }
+
+    .modal-backdrop.open {
+      display: grid;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 500px;
+      background: #0b0f13;
+      border: 1px solid var(--border-glow);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+
+    .toast-container {
+      position: fixed;
+      bottom: 1.25rem;
+      right: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      z-index: 120;
+    }
+
+    .toast {
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-glow);
+      color: var(--text-primary);
+      padding: 0.85rem 1.15rem;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      animation: fadeSlideIn 0.25s ease;
+    }
+
+    /* ==========================================================================
+       12. FOOTER
+       ========================================================================== */
+    .footer {
+      margin-top: 3rem;
+      padding: 2rem 0;
+      border-top: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    /* ==========================================================================
+       13. RESPONSIVE BREAKPOINTS
+       ========================================================================== */
+    @media (max-width: 1080px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .services-grid { grid-template-columns: repeat(2, 1fr); }
+      .projects-grid { grid-template-columns: repeat(2, 1fr); }
+      .terminal-layout { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 720px) {
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        right: 0;
+        background: rgba(6, 9, 19, 0.96);
+        border-bottom: 1px solid var(--border-subtle);
+        flex-direction: column;
+        padding: 1.25rem;
+        gap: 1rem;
+      }
+      .nav-links.open { display: flex; }
+      .mobile-toggle { display: inline-flex; }
+      .kpi-grid, .services-grid, .projects-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       STICKY GLASSMORPHIC NAVIGATION
+       ======================================================================== -->
+  <header class="navbar">
+    <div class="container nav-inner">
+      <a href="#" class="brand">
+        <div class="brand-logo" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <span>CloudPulse<span style="color: var(--accent-cyan);">.AI</span></span>
+      </a>
+
+      <nav class="nav-links" id="navLinks">
+        <a href="#telemetry">Live Telemetry</a>
+        <a href="#nodes">Container Nodes</a>
+        <a href="#terminal">Deploy Console</a>
+        <a href="#projects">Architecture Showcase</a>
+      </nav>
+
+      <div class="nav-actions">
+        <!-- Theme Palette Switcher Pill -->
+        <div class="theme-switcher" role="group" aria-label="Color Palette Switcher" title="Switch Dashboard Theme">
+          <button class="theme-dot-btn active" data-theme-target="obsidian" style="background: linear-gradient(135deg, #10b981, #f59e0b);" aria-label="Emerald Obsidian Theme" title="Emerald Obsidian"></button>
+          <button class="theme-dot-btn" data-theme-target="crimson" style="background: linear-gradient(135deg, #f43f5e, #fb923c);" aria-label="Crimson Dusk Theme" title="Crimson Dusk"></button>
+          <button class="theme-dot-btn" data-theme-target="sapphire" style="background: linear-gradient(135deg, #38bdf8, #818cf8);" aria-label="Midnight Sapphire Theme" title="Midnight Sapphire"></button>
+        </div>
+
+        <span class="badge badge-emerald" title="Cluster Region: ap-south-1">
+          <span class="pulse-dot"></span> ap-south-1
+        </span>
+        <button class="btn btn-primary" id="openModalBtn">Quick Deploy / Hire</button>
+        <button class="mobile-toggle" id="mobileMenuBtn" aria-label="Toggle Menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ======================================================================
+         HERO & ENGINEER PROFILE OVERVIEW
+         ====================================================================== -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="badge badge-cyan">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+            PRODUCTION TELEMETRY &amp; SYSTEMS PORTFOLIO
+          </div>
+          <h1 class="hero-title">
+            Resilient Cloud Infrastructure &amp; <span class="gradient-text">Low-Latency AI Pipelines.</span>
+          </h1>
+          <p class="hero-subtitle">
+            Real-time control plane monitoring AWS EC2 compute clusters, containerized LLM inference workers, and full-stack microservices—engineered for 99.98% availability.
+          </p>
+          <div class="hero-cta-group">
+            <a href="#terminal" class="btn btn-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              Trigger Container Rollout
+            </a>
+            <a href="#projects" class="btn btn-secondary">Explore Case Studies</a>
+          </div>
+        </div>
+
+        <!-- Developer / Systems Architect Identity Card -->
+        <aside class="glass-card architect-card">
+          <div class="architect-header">
+            <div class="avatar-ring">
+              <div class="avatar-inner">CP</div>
+            </div>
+            <div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <h2 style="font-size: 1.05rem; font-weight: 700;">Lead Cloud &amp; AI Architect</h2>
+                <span class="badge badge-indigo">v4.2 Live</span>
+              </div>
+              <p style="font-size: 0.82rem; color: var(--text-secondary);">Distributed Systems • MLOps • Container Orchestration</p>
+            </div>
+          </div>
+
+          <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.55;">
+            Specializing in zero-downtime Docker/Nginx deployments, RAG inference engines, and high-throughput Python/TypeScript backends.
+          </p>
+
+          <div class="tech-stack-pills">
+            <span class="tech-pill">AWS EC2 / ECS</span>
+            <span class="tech-pill">Docker &amp; Nginx</span>
+            <span class="tech-pill">PyTorch / vLLM</span>
+            <span class="tech-pill">FastAPI</span>
+            <span class="tech-pill">Kubernetes</span>
+            <span class="tech-pill">Terraform</span>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         LIVE SIMULATED METRICS (SVG SPARKLINES & RADIAL GAUGES)
+         ====================================================================== -->
+    <section class="section" id="telemetry">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2.2">
+                <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+              </svg>
+              Live Infrastructure Telemetry
+            </h2>
+            <p class="section-desc">Streaming simulated metrics sampled every 2.0s from edge load balancers and GPU nodes.</p>
+          </div>
+          <button class="btn btn-secondary btn-xs" id="toggleStreamBtn">Pause Stream</button>
+        </div>
+
+        <div class="kpi-grid">
+          <!-- KPI 1: EC2 Cluster CPU -->
+          <div class="glass-card kpi-card">
+            <div class="kpi-top">
+              <div>
+                <div class="kpi-label">EC2 Cluster Load</div>
+                <div class="kpi-value-row">
+                  <span class="kpi-value" id="cpuVal">42.8</span>
+                  <span class="kpi-unit">% vCPU</span>
+                </div>
+              </div>
+              <div class="gauge-wrap">
+                <svg width="64" height="64" viewBox="0 0 64 64">
+                  <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(148,163,184,0.15)" stroke-width="6"/>
+                  <circle id="cpuGauge" cx="32" cy="32" r="26" fill="none" stroke="var(--accent-cyan)" stroke-width="6"
+                    stroke-dasharray="163.36" stroke-dashoffset="93" stroke-linecap="round" transform="rotate(-90 32 32)"/>
+                </svg>
+                <div class="gauge-text" id="cpuGaugeText">43%</div>
+              </div>
+            </div>
+            <div class="kpi-footer">
+              <span>6x c7g.2xlarge active</span>
+              <span style="color: var(--accent-emerald);">Optimal</span>
+            </div>
+          </div>
+
+          <!-- KPI 2: GPU / LLM Inference Load -->
+          <div class="glass-card kpi-card">
+            <div class="kpi-top">
+              <div>
+                <div class="kpi-label">GPU / LLM Inference</div>
+                <div class="kpi-value-row">
+                  <span class="kpi-value" id="gpuVal">76.4</span>
+                  <span class="kpi-unit">% VRAM</span>
+                </div>
+              </div>
+              <div class="gauge-wrap">
+                <svg width="64" height="64" viewBox="0 0 64 64">
+                  <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(148,163,184,0.15)" stroke-width="6"/>
+                  <circle id="gpuGauge" cx="32" cy="32" r="26" fill="none" stroke="var(--accent-indigo)" stroke-width="6"
+                    stroke-dasharray="163.36" stroke-dashoffset="38" stroke-linecap="round" transform="rotate(-90 32 32)"/>
+                </svg>
+                <div class="gauge-text" id="gpuGaugeText">76%</div>
+              </div>
+            </div>
+            <div class="kpi-footer">
+              <span id="tokensSec">1,420 tok/sec</span>
+              <span style="color: var(--accent-indigo);">A10G TensorRT</span>
+            </div>
+          </div>
+
+          <!-- KPI 3: API Gateway P95 Latency (SVG Sparkline) -->
+          <div class="glass-card kpi-card">
+            <div class="kpi-top">
+              <div>
+                <div class="kpi-label">API P95 Latency</div>
+                <div class="kpi-value-row">
+                  <span class="kpi-value" id="latencyVal">38</span>
+                  <span class="kpi-unit">ms</span>
+                </div>
+              </div>
+              <span class="badge badge-emerald">-12% SLA</span>
+            </div>
+            <svg class="sparkline-svg" id="latencySparkline" viewBox="0 0 220 44" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="sparkGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop id="sparkGradTop" offset="0%" stop-color="#10b981" stop-opacity="0.38"/>
+                  <stop id="sparkGradBottom" offset="100%" stop-color="#10b981" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path id="latencyArea" fill="url(#sparkGrad)" d=""/>
+              <path id="latencyLine" fill="none" stroke="var(--accent-primary)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d=""/>
+            </svg>
+            <div class="kpi-footer">
+              <span>Nginx Reverse Proxy</span>
+              <span>99.99% 2xx OK</span>
+            </div>
+          </div>
+
+          <!-- KPI 4: Active Docker Containers -->
+          <div class="glass-card kpi-card">
+            <div class="kpi-top">
+              <div>
+                <div class="kpi-label">Docker Containers</div>
+                <div class="kpi-value-row">
+                  <span class="kpi-value" id="containerCount">24</span>
+                  <span class="kpi-unit">/ 24 healthy</span>
+                </div>
+              </div>
+              <span class="badge badge-cyan">Swarm / ECS</span>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; padding: 0.45rem 0;" id="containerMatrix">
+              <!-- Populated dynamically with 24 health cells -->
+            </div>
+            <div class="kpi-footer">
+              <span>Zero OOMKilled events</span>
+              <span style="color: var(--accent-emerald);">Uptime 48d 14h</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         INTERACTIVE SERVICE STATUS CARDS
+         ====================================================================== -->
+    <section class="section" id="nodes">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-emerald)" stroke-width="2.2">
+                <rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>
+              </svg>
+              Microservice &amp; Container Nodes
+            </h2>
+            <p class="section-desc">Inspect live containers, trigger rolling restarts, or stream service diagnostics.</p>
+          </div>
+        </div>
+
+        <div class="services-grid" id="servicesGrid">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         INTERACTIVE DEPLOYMENT TERMINAL SIMULATOR
+         ====================================================================== -->
+    <section class="section" id="terminal">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-indigo)" stroke-width="2.2">
+                <polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>
+              </svg>
+              Interactive CI/CD &amp; Container Deployment Console
+            </h2>
+            <p class="section-desc">Select a target microservice and image tag to simulate a zero-downtime Docker rollout.</p>
+          </div>
+        </div>
+
+        <div class="terminal-layout">
+          <div class="glass-card deploy-controls">
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+              <div class="control-group">
+                <label class="control-label" for="deployServiceSelect">Target Service Stack</label>
+                <select id="deployServiceSelect" class="select-input">
+                  <option value="llm-inference-engine">llm-inference-engine (vLLM + CUDA)</option>
+                  <option value="api-gateway-nginx">api-gateway-nginx (Edge Proxy)</option>
+                  <option value="rag-vector-indexer">rag-vector-indexer (Qdrant Worker)</option>
+                  <option value="telemetry-stream-consumer">telemetry-stream-consumer (Go)</option>
+                </select>
+              </div>
+
+              <div class="control-group">
+                <label class="control-label" for="deployTagInput">Container Image Tag</label>
+                <input type="text" id="deployTagInput" class="text-input" value="v2.8.4-prod-arm64" />
+              </div>
+
+              <div class="control-group">
+                <label class="control-label" for="deployStrategySelect">Rollout Strategy</label>
+                <select id="deployStrategySelect" class="select-input">
+                  <option value="RollingUpdate (Zero-Downtime)">RollingUpdate (Zero-Downtime)</option>
+                  <option value="Blue/Green Traffic Shift">Blue/Green Traffic Shift</option>
+                  <option value="Canary 10% -> 100%">Canary 10% &rarr; 100%</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+              <button class="btn btn-primary" id="runDeployBtn" style="width: 100%;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                </svg>
+                Deploy Container Build
+              </button>
+              <button class="btn btn-secondary btn-xs" id="clearTerminalBtn" style="width: 100%;">Clear Console Output</button>
+            </div>
+          </div>
+
+          <div class="terminal-window">
+            <div class="terminal-bar">
+              <div class="window-dots">
+                <span class="dot-red"></span>
+                <span class="dot-yellow"></span>
+                <span class="dot-green"></span>
+              </div>
+              <span class="terminal-title">deploy@cloudpulse-prod-ec2:~# docker-orchestrator</span>
+              <span class="badge badge-emerald" id="terminalStatusBadge">READY</span>
+            </div>
+            <div class="terminal-body" id="terminalOutput" role="log" aria-live="polite">
+              <!-- Initial boot logs populated by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         FILTERABLE PROJECT SHOWCASE GRID
+         ====================================================================== -->
+    <section class="section" id="projects">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2.2">
+                <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
+              </svg>
+              Featured Engineering &amp; Architecture Showcase
+            </h2>
+            <p class="section-desc">Filter production systems across AI Engineering, Cloud/Docker Infrastructure, and Full-Stack Web.</p>
+          </div>
+
+          <div class="filter-tabs" role="tablist" aria-label="Project Categories">
+            <button class="filter-btn active" data-filter="all">All Systems (6)</button>
+            <button class="filter-btn" data-filter="ai">AI Engineering</button>
+            <button class="filter-btn" data-filter="cloud">Cloud / Docker</button>
+            <button class="filter-btn" data-filter="fullstack">Full-Stack Web</button>
+          </div>
+        </div>
+
+        <div class="projects-grid" id="projectsGrid">
+          <!-- Rendered dynamically via JS -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================================================================
+       FOOTER
+       ======================================================================== -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div style="display: flex; align-items: center; gap: 0.65rem;">
+        <span class="pulse-dot"></span>
+        <span><strong>CloudPulse AI</strong> &mdash; Standalone Zero-Dependency Architecture &amp; Telemetry Dashboard</span>
+      </div>
+      <div>
+        <span>Container Ready: <code style="color: var(--accent-cyan); font-family: var(--font-mono);">nginx:alpine</code> • Single-File Bundle</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================================
+       CONTACT / QUICK-DEPLOY MODAL
+       ======================================================================== -->
+  <div class="modal-backdrop" id="contactModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div>
+          <h3 id="modalTitle" style="font-size: 1.2rem; font-weight: 700;">Initialize Deployment or Consultation</h3>
+          <p style="font-size: 0.82rem; color: var(--text-secondary);">Spin up a dedicated cloud sandbox or send a direct engineering inquiry.</p>
+        </div>
+        <button id="closeModalBtn" aria-label="Close modal" style="padding: 0.4rem; color: var(--text-secondary);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <form id="quickDeployForm" style="display: flex; flex-direction: column; gap: 1rem;">
+        <div class="control-group">
+          <label class="control-label" for="senderName">Your Name / Organization</label>
+          <input type="text" id="senderName" class="text-input" placeholder="e.g., Alex Rivera — Acme AI Labs" required />
+        </div>
+
+        <div class="control-group">
+          <label class="control-label" for="senderEmail">Work Email</label>
+          <input type="email" id="senderEmail" class="text-input" placeholder="alex@company.io" required />
+        </div>
+
+        <div class="control-group">
+          <label class="control-label" for="inquiryScope">Architecture Scope</label>
+          <select id="inquiryScope" class="select-input">
+            <option value="LLM / RAG Inference Cluster Setup">LLM / RAG Inference Cluster Setup</option>
+            <option value="AWS EC2 / Docker / Nginx Production Migration">AWS EC2 / Docker / Nginx Production Migration</option>
+            <option value="Full-Stack Real-Time Web Application">Full-Stack Real-Time Web Application</option>
+            <option value="Principal Cloud/AI Engineering Advisory">Principal Cloud/AI Engineering Advisory</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label" for="senderNotes">Workload Specifications</label>
+          <textarea id="senderNotes" class="textarea-input" rows="3" placeholder="Describe target latency, expected RPS, or model sizing..."></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 0.5rem;">
+          <button type="button" class="btn btn-secondary" id="cancelModalBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Dispatch Request</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Stack -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ========================================================================
+       APPLICATION LOGIC (SELF-CONTAINED VANILLA JS)
+       ======================================================================== -->
+  <script>
+    (function () {
+      "use strict";
+
+      /* ----------------------------------------------------------------------
+         0. INTERACTIVE THEME PALETTE CONTROLLER
+         ---------------------------------------------------------------------- */
+      const themeConfigs = {
+        obsidian: {
+          attr: "",
+          label: "Emerald Obsidian",
+          primary: "#10b981",
+          secondary: "#f59e0b"
+        },
+        crimson: {
+          attr: "crimson",
+          label: "Crimson Dusk",
+          primary: "#f43f5e",
+          secondary: "#fb923c"
+        },
+        sapphire: {
+          attr: "sapphire",
+          label: "Midnight Sapphire",
+          primary: "#38bdf8",
+          secondary: "#818cf8"
+        }
+      };
+
+      const themeButtons = document.querySelectorAll(".theme-dot-btn");
+      const sparkGradTop = document.getElementById("sparkGradTop");
+      const sparkGradBottom = document.getElementById("sparkGradBottom");
+
+      function applyTheme(themeKey) {
+        const cfg = themeConfigs[themeKey] || themeConfigs.obsidian;
+        if (cfg.attr) {
+          document.documentElement.setAttribute("data-theme", cfg.attr);
+        } else {
+          document.documentElement.removeAttribute("data-theme");
+        }
+
+        if (sparkGradTop && sparkGradBottom) {
+          sparkGradTop.setAttribute("stop-color", cfg.primary);
+          sparkGradBottom.setAttribute("stop-color", cfg.primary);
+        }
+
+        themeButtons.forEach((btn) => {
+          btn.classList.toggle("active", btn.getAttribute("data-theme-target") === themeKey);
+        });
+      }
+
+      themeButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const targetTheme = btn.getAttribute("data-theme-target");
+          applyTheme(targetTheme);
+          const cfg = themeConfigs[targetTheme];
+          showToast(`Switched palette to ${cfg.label}`, cfg.primary);
+        });
+      });
+
+      /* ----------------------------------------------------------------------
+         1. DATA MODELS (SERVICES & PORTFOLIO PROJECTS)
+         ---------------------------------------------------------------------- */
+      const servicesData = [
+        {
+          id: "srv-ec2-core",
+          name: "ec2-inference-node-01",
+          role: "AWS g5.2xlarge • NVIDIA A10G",
+          status: "Healthy",
+          cpu: "64%",
+          mem: "18.4 / 24 GB",
+          uptime: "99.99%"
+        },
+        {
+          id: "srv-docker-api",
+          name: "fastapi-rag-gateway",
+          role: "Docker Container • 4 Replicas",
+          status: "Healthy",
+          cpu: "31%",
+          mem: "2.1 / 4.0 GB",
+          uptime: "99.98%"
+        },
+        {
+          id: "srv-nginx-edge",
+          name: "nginx-tls-ingress",
+          role: "Reverse Proxy • HTTP/3 + Brotli",
+          status: "Healthy",
+          cpu: "14%",
+          mem: "410 MB",
+          uptime: "100.0%"
+        },
+        {
+          id: "srv-vector-db",
+          name: "qdrant-vector-cluster",
+          role: "HNSW Index • 14.2M Embeddings",
+          status: "Healthy",
+          cpu: "48%",
+          mem: "11.2 / 16 GB",
+          uptime: "99.97%"
+        },
+        {
+          id: "srv-redis-cache",
+          name: "redis-semantic-cache",
+          role: "In-Memory KV • 91% Hit Ratio",
+          status: "Healthy",
+          cpu: "19%",
+          mem: "1.6 / 4.0 GB",
+          uptime: "99.99%"
+        },
+        {
+          id: "srv-worker-queue",
+          name: "celery-async-ingestor",
+          role: "Document OCR & Chunking Pipeline",
+          status: "Healthy",
+          cpu: "53%",
+          mem: "3.8 / 8.0 GB",
+          uptime: "99.95%"
+        }
+      ];
+
+      const projectsData = [
+        {
+          title: "vLLM Multi-Tenant Inference Router",
+          category: "ai",
+          categoryLabel: "AI Engineering",
+          badgeClass: "badge-indigo",
+          desc: "High-throughput LLM serving gateway with semantic Redis caching, dynamic batching, and token-bucket rate limiting across multi-GPU EC2 nodes.",
+          metric: "41ms TTFT • 3.4x Throughput Gain",
+          stack: ["PyTorch", "vLLM", "FastAPI", "Redis"],
+          repoCmd: "docker pull cloudpulse/vllm-router:2.8"
+        },
+        {
+          title: "Zero-Downtime EC2 & Docker Swarm Mesh",
+          category: "cloud",
+          categoryLabel: "Cloud / Docker",
+          badgeClass: "badge-cyan",
+          desc: "Automated Terraform + GitHub Actions deployment pipeline orchestrating blue/green container cutovers behind an Alpine Nginx TLS terminator.",
+          metric: "0ms Dropped Packets • 28s Rollout",
+          stack: ["AWS EC2", "Docker", "Nginx", "Terraform"],
+          repoCmd: "docker compose -f prod-mesh.yml up -d"
+        },
+        {
+          title: "Hybrid Graph + Vector RAG Engine",
+          category: "ai",
+          categoryLabel: "AI Engineering",
+          badgeClass: "badge-indigo",
+          desc: "Enterprise knowledge retrieval pipeline combining dense Qdrant embeddings with BM25 sparse re-ranking and deterministic citation verification.",
+          metric: "94.6% Recall@5 • Sub-120ms Query",
+          stack: ["Qdrant", "Python", "ONNX", "PostgreSQL"],
+          repoCmd: "docker pull cloudpulse/hybrid-rag:1.9"
+        },
+        {
+          title: "Distributed eBPF Container Observability",
+          category: "cloud",
+          categoryLabel: "Cloud / Docker",
+          badgeClass: "badge-cyan",
+          desc: "Lightweight kernel-level telemetry collector exporting syscall latency, socket throughput, and container memory pressure with <1% CPU overhead.",
+          metric: "0.7% Overhead • 150k Events/sec",
+          stack: ["Go", "eBPF", "Prometheus", "Docker"],
+          repoCmd: "docker run --privileged cloudpulse/ebpf-agent"
+        },
+        {
+          title: "Real-Time Collaborative FinOps Console",
+          category: "fullstack",
+          categoryLabel: "Full-Stack Web",
+          badgeClass: "badge-emerald",
+          desc: "Interactive cloud cost anomaly explorer and spot-instance scheduler featuring WebSocket live updates and sub-second multi-region aggregation.",
+          metric: "-34% AWS Spend • 60fps Canvas UI",
+          stack: ["TypeScript", "WebSockets", "ClickHouse", "CSS Grid"],
+          repoCmd: "docker pull cloudpulse/finops-ui:4.1"
+        },
+        {
+          title: "Edge-Cached AI Code Sandbox Studio",
+          category: "fullstack",
+          categoryLabel: "Full-Stack Web",
+          badgeClass: "badge-emerald",
+          desc: "Browser-based ephemeral microVM execution environment enabling instant full-stack previews with isolated network namespaces and live logs.",
+          metric: "480ms Cold Boot • Isolated Firecracker",
+          stack: ["Rust", "WebAssembly", "Nginx", "Docker"],
+          repoCmd: "docker pull cloudpulse/sandbox-edge:3.0"
+        }
+      ];
+
+      /* ----------------------------------------------------------------------
+         2. TOAST NOTIFICATION HELPER
+         ---------------------------------------------------------------------- */
+      const toastContainer = document.getElementById("toastContainer");
+
+      function showToast(message, accentColor = "var(--accent-cyan)") {
+        const toast = document.createElement("div");
+        toast.className = "toast";
+        toast.style.borderLeft = `3px solid ${accentColor}`;
+        toast.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="${accentColor}" stroke-width="2.4">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          <span>${message}</span>
+        `;
+        toastContainer.appendChild(toast);
+        setTimeout(() => {
+          toast.style.opacity = "0";
+          toast.style.transform = "translateY(6px)";
+          toast.style.transition = "all 0.25s ease";
+          setTimeout(() => toast.remove(), 260);
+        }, 3200);
+      }
+
+      /* ----------------------------------------------------------------------
+         3. LIVE TELEMETRY & SVG SPARKLINE / GAUGE ENGINE
+         ---------------------------------------------------------------------- */
+      let streamActive = true;
+      const latencyHistory = [44, 41, 46, 39, 37, 42, 36, 35, 40, 38, 34, 38];
+      const circumference = 2 * Math.PI * 26; // r=26 -> ~163.36
+
+      const cpuValEl = document.getElementById("cpuVal");
+      const cpuGaugeEl = document.getElementById("cpuGauge");
+      const cpuGaugeTextEl = document.getElementById("cpuGaugeText");
+
+      const gpuValEl = document.getElementById("gpuVal");
+      const gpuGaugeEl = document.getElementById("gpuGauge");
+      const gpuGaugeTextEl = document.getElementById("gpuGaugeText");
+      const tokensSecEl = document.getElementById("tokensSec");
+
+      const latencyValEl = document.getElementById("latencyVal");
+      const latencyLineEl = document.getElementById("latencyLine");
+      const latencyAreaEl = document.getElementById("latencyArea");
+      const containerMatrixEl = document.getElementById("containerMatrix");
+
+      // Render 24 healthy container cells
+      function initContainerMatrix() {
+        containerMatrixEl.innerHTML = "";
+        for (let i = 0; i < 24; i++) {
+          const cell = document.createElement("div");
+          cell.title = `Container #${i + 1}: Running (Healthy)`;
+          cell.style.height = "18px";
+          cell.style.borderRadius = "4px";
+          cell.style.background = "var(--accent-primary)";
+          cell.style.opacity = (0.72 + (i % 4) * 0.07).toFixed(2);
+          cell.style.transition = "transform 0.2s ease, opacity 0.3s ease, background-color 0.28s ease";
+          containerMatrixEl.appendChild(cell);
+        }
+      }
+
+      function renderSparkline() {
+        const width = 220;
+        const height = 44;
+        const minVal = 20;
+        const maxVal = 65;
+        const stepX = width / (latencyHistory.length - 1);
+
+        const points = latencyHistory.map((val, idx) => {
+          const x = idx * stepX;
+          const norm = (val - minVal) / (maxVal - minVal);
+          const y = height - Math.max(4, Math.min(height - 4, norm * height));
+          return `${x.toFixed(1)},${y.toFixed(1)}`;
+        });
+
+        const linePath = `M ${points.join(" L ")}`;
+        const areaPath = `${linePath} L ${width},${height} L 0,${height} Z`;
+
+        latencyLineEl.setAttribute("d", linePath);
+        latencyAreaEl.setAttribute("d", areaPath);
+      }
+
+      function updateTelemetry() {
+        if (!streamActive) return;
+
+        // Simulated EC2 CPU
+        const cpu = +(36 + Math.random() * 18).toFixed(1);
+        const cpuRounded = Math.round(cpu);
+        cpuValEl.textContent = cpu;
+        cpuGaugeTextEl.textContent = `${cpuRounded}%`;
+        cpuGaugeEl.style.strokeDashoffset = (circumference * (1 - cpu / 100)).toFixed(2);
+
+        // Simulated GPU Inference Load
+        const gpu = +(68 + Math.random() * 19).toFixed(1);
+        const gpuRounded = Math.round(gpu);
+        gpuValEl.textContent = gpu;
+        gpuGaugeTextEl.textContent = `${gpuRounded}%`;
+        gpuGaugeEl.style.strokeDashoffset = (circumference * (1 - gpu / 100)).toFixed(2);
+        tokensSecEl.textContent = `${Math.round(1280 + Math.random() * 340).toLocaleString()} tok/sec`;
+
+        // Simulated P95 Latency
+        const nextLatency = Math.round(29 + Math.random() * 19);
+        latencyHistory.shift();
+        latencyHistory.push(nextLatency);
+        latencyValEl.textContent = nextLatency;
+        renderSparkline();
+
+        // Subtle shimmer on a random container cell
+        const cells = containerMatrixEl.children;
+        if (cells.length) {
+          const randIdx = Math.floor(Math.random() * cells.length);
+          cells[randIdx].style.transform = "scaleY(1.22)";
+          setTimeout(() => {
+            if (cells[randIdx]) cells[randIdx].style.transform = "scaleY(1)";
+          }, 400);
+        }
+      }
+
+      initContainerMatrix();
+      renderSparkline();
+      setInterval(updateTelemetry, 2000);
+
+      const toggleStreamBtn = document.getElementById("toggleStreamBtn");
+      toggleStreamBtn.addEventListener("click", () => {
+        streamActive = !streamActive;
+        toggleStreamBtn.textContent = streamActive ? "Pause Stream" : "Resume Stream";
+        showToast(streamActive ? "Live telemetry stream resumed." : "Telemetry polling paused.");
+      });
+
+      /* ----------------------------------------------------------------------
+         4. INTERACTIVE SERVICE STATUS CARDS
+         ---------------------------------------------------------------------- */
+      const servicesGrid = document.getElementById("servicesGrid");
+
+      function renderServices() {
+        servicesGrid.innerHTML = servicesData.map((srv) => {
+          const isRestarting = srv.status === "Restarting";
+          const badgeClass = isRestarting ? "badge-amber" : "badge-emerald";
+          return `
+            <article class="glass-card service-card">
+              <div class="service-header">
+                <div class="service-identity">
+                  <div class="service-icon" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="service-name">${srv.name}</div>
+                    <div class="service-meta">${srv.role}</div>
+                  </div>
+                </div>
+                <span class="badge ${badgeClass}">${srv.status}</span>
+              </div>
+
+              <div class="service-stats">
+                <div class="stat-item">
+                  <span>CPU</span>
+                  <span>${srv.cpu}</span>
+                </div>
+                <div class="stat-item">
+                  <span>Memory</span>
+                  <span>${srv.mem}</span>
+                </div>
+                <div class="stat-item">
+                  <span>SLA</span>
+                  <span>${srv.uptime}</span>
+                </div>
+              </div>
+
+              <div class="service-actions">
+                <button class="btn btn-secondary btn-xs" data-inspect="${srv.name}">Inspect Logs</button>
+                <button class="btn btn-secondary btn-xs" data-restart="${srv.id}" ${isRestarting ? "disabled" : ""}>
+                  ${isRestarting ? "Cycling..." : "Rolling Restart"}
+                </button>
+              </div>
+            </article>
+          `;
+        }).join("");
+      }
+
+      servicesGrid.addEventListener("click", (e) => {
+        const restartId = e.target.getAttribute("data-restart");
+        const inspectName = e.target.getAttribute("data-inspect");
+
+        if (restartId) {
+          const target = servicesData.find((s) => s.id === restartId);
+          if (!target) return;
+          target.status = "Restarting";
+          renderServices();
+          appendTerminalLog("WARN", `Initiating graceful SIGTERM & container recycle on [${target.name}]...`);
+          showToast(`Cycling container ${target.name}...`, "var(--accent-amber)");
+
+          setTimeout(() => {
+            target.status = "Healthy";
+            renderServices();
+            appendTerminalLog("OK", `Container [${target.name}] passed /healthz check in 310ms.`);
+            showToast(`${target.name} is back online.`, "var(--accent-emerald)");
+          }, 1800);
+        }
+
+        if (inspectName) {
+          document.getElementById("terminal").scrollIntoView({ behavior: "smooth" });
+          appendTerminalLog("CMD", `docker logs --tail 25 ${inspectName}`);
+          appendTerminalLog("INFO", `[${inspectName}] worker pool active | TLS 1.3 handshake 1.4ms | 0 errors.`);
+        }
+      });
+
+      renderServices();
+
+      /* ----------------------------------------------------------------------
+         5. INTERACTIVE DEPLOYMENT TERMINAL SIMULATOR
+         ---------------------------------------------------------------------- */
+      const terminalOutput = document.getElementById("terminalOutput");
+      const terminalStatusBadge = document.getElementById("terminalStatusBadge");
+      const runDeployBtn = document.getElementById("runDeployBtn");
+      const clearTerminalBtn = document.getElementById("clearTerminalBtn");
+      let isDeploying = false;
+
+      function getTimestamp() {
+        const now = new Date();
+        return now.toTimeString().split(" ")[0];
+      }
+
+      function appendTerminalLog(level, message) {
+        const line = document.createElement("div");
+        line.className = "log-line";
+        const tagClass =
+          level === "OK" ? "log-tag-ok" :
+          level === "WARN" ? "log-tag-warn" :
+          level === "CMD" ? "log-tag-cmd" : "log-tag-info";
+
+        line.innerHTML = `
+          <span class="log-time">[${getTimestamp()}]</span>
+          <span class="${tagClass}">[${level}]</span>
+          <span>${message}</span>
+        `;
+        terminalOutput.appendChild(line);
+        terminalOutput.scrollTop = terminalOutput.scrollHeight;
+      }
+
+      // Boot sequence logs
+      appendTerminalLog("INFO", "CloudPulse Orchestrator v4.2 initialized on ap-south-1.");
+      appendTerminalLog("OK", "Connected to Docker Engine socket unix:///var/run/docker.sock.");
+      appendTerminalLog("INFO", "Nginx upstream health probes passing across 6 active nodes.");
+
+      runDeployBtn.addEventListener("click", () => {
+        if (isDeploying) return;
+        isDeploying = true;
+
+        const service = document.getElementById("deployServiceSelect").value;
+        const tag = document.getElementById("deployTagInput").value.trim() || "latest";
+        const strategy = document.getElementById("deployStrategySelect").value;
+
+        runDeployBtn.disabled = true;
+        terminalStatusBadge.textContent = "DEPLOYING";
+        terminalStatusBadge.className = "badge badge-amber";
+
+        const steps = [
+          { delay: 150, level: "CMD", msg: `cloudpulse deploy --service=${service} --tag=${tag} --strategy="${strategy}"` },
+          { delay: 650, level: "INFO", msg: `Pulling multi-arch manifest registry.cloudpulse.ai/${service}:${tag}...` },
+          { delay: 1300, level: "INFO", msg: `Verifying cosign image signature & SBOM attestation... Verified (sha256:9f84c2e1).` },
+          { delay: 2000, level: "INFO", msg: `Provisioning replacement container & warming model weights in VRAM...` },
+          { delay: 2750, level: "OK", msg: `Readiness probe http://127.0.0.1:8080/healthz returned 200 OK (19ms).` },
+          { delay: 3400, level: "INFO", msg: `Reloading Nginx upstream pool with zero dropped connections (nginx -s reload)...` },
+          { delay: 4000, level: "OK", msg: `Deployment complete! ${service}:${tag} is live in production.` }
+        ];
+
+        steps.forEach((step, idx) => {
+          setTimeout(() => {
+            appendTerminalLog(step.level, step.msg);
+            if (idx === steps.length - 1) {
+              isDeploying = false;
+              runDeployBtn.disabled = false;
+              terminalStatusBadge.textContent = "HEALTHY";
+              terminalStatusBadge.className = "badge badge-emerald";
+              showToast(`Deployed ${service}:${tag} successfully!`, "var(--accent-emerald)");
+            }
+          }, step.delay);
+        });
+      });
+
+      clearTerminalBtn.addEventListener("click", () => {
+        terminalOutput.innerHTML = "";
+        appendTerminalLog("INFO", "Console buffer cleared.");
+      });
+
+      /* ----------------------------------------------------------------------
+         6. FILTERABLE PROJECT SHOWCASE GRID
+         ---------------------------------------------------------------------- */
+      const projectsGrid = document.getElementById("projectsGrid");
+      const filterBtns = document.querySelectorAll(".filter-btn");
+
+      function renderProjects(filter = "all") {
+        const filtered = filter === "all"
+          ? projectsData
+          : projectsData.filter((p) => p.category === filter);
+
+        projectsGrid.innerHTML = filtered.map((proj) => `
+          <article class="glass-card project-card">
+            <div>
+              <div class="project-top">
+                <span class="badge ${proj.badgeClass}">${proj.categoryLabel}</span>
+                <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);">PROD-VERIFIED</span>
+              </div>
+              <h3 class="project-title">${proj.title}</h3>
+              <p class="project-desc">${proj.desc}</p>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+              <div class="project-metrics">
+                <span>⚡ ${proj.metric}</span>
+              </div>
+
+              <div class="tech-stack-pills">
+                ${proj.stack.map((tech) => `<span class="tech-pill">${tech}</span>`).join("")}
+              </div>
+
+              <div class="project-footer">
+                <code style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                  ${proj.repoCmd}
+                </code>
+                <button class="btn btn-secondary btn-xs" data-copy-cmd="${proj.repoCmd}">Copy</button>
+              </div>
+            </div>
+          </article>
+        `).join("");
+      }
+
+      filterBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          filterBtns.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          renderProjects(btn.getAttribute("data-filter"));
+        });
+      });
+
+      projectsGrid.addEventListener("click", (e) => {
+        const cmd = e.target.getAttribute("data-copy-cmd");
+        if (!cmd) return;
+
+        // Safe clipboard copy using temporary textarea + execCommand fallback
+        const tempInput = document.createElement("textarea");
+        tempInput.value = cmd;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        try {
+          document.execCommand("copy");
+          showToast(`Copied: ${cmd}`);
+        } catch (err) {
+          showToast("Command ready in console.");
+        }
+        document.body.removeChild(tempInput);
+      });
+
+      renderProjects("all");
+
+      /* ----------------------------------------------------------------------
+         7. RESPONSIVE NAVIGATION & CONTACT / QUICK-DEPLOY MODAL
+         ---------------------------------------------------------------------- */
+      const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+      const navLinks = document.getElementById("navLinks");
+
+      mobileMenuBtn.addEventListener("click", () => {
+        navLinks.classList.toggle("open");
+      });
+
+      navLinks.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => navLinks.classList.remove("open"));
+      });
+
+      const contactModal = document.getElementById("contactModal");
+      const openModalBtn = document.getElementById("openModalBtn");
+      const closeModalBtn = document.getElementById("closeModalBtn");
+      const cancelModalBtn = document.getElementById("cancelModalBtn");
+      const quickDeployForm = document.getElementById("quickDeployForm");
+
+      function closeModal() {
+        contactModal.classList.remove("open");
+      }
+
+      openModalBtn.addEventListener("click", () => contactModal.classList.add("open"));
+      closeModalBtn.addEventListener("click", closeModal);
+      cancelModalBtn.addEventListener("click", closeModal);
+
+      contactModal.addEventListener("click", (e) => {
+        if (e.target === contactModal) closeModal();
+      });
+
+      quickDeployForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const name = document.getElementById("senderName").value.trim();
+        const scope = document.getElementById("inquiryScope").value;
+        closeModal();
+        quickDeployForm.reset();
+        appendTerminalLog("INFO", `New architecture dispatch received from ${name} (${scope}).`);
+        showToast(`Request dispatched for ${name}!`, "var(--accent-emerald)");
+      });
+    })();
+  </script>
+</body>
+</html>
